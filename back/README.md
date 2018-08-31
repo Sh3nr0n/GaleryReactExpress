@@ -1,6 +1,6 @@
 # Etapes  exercice #2 : Créer les requêtes d'affichage, d'insertion, de modification et de suppression des images dans une base de données
 
-## Paramétrer les serveurs node (back-end et front-end)
+## Paramétrer le serveur node pour le back-end
 
  - Ouvrir le fichier **package.json** à la racine du projet et entrer la ligne de code suivante pour que le serveur back-end se lance sur un port différent de l'application React :
 
@@ -11,6 +11,10 @@
           "scripts": {
             "start": "PORT=3001 node ./bin/www" // <= ligne à    ajouter
           },
+
+Ici on paramètre le server backen pour qu'il se lance sur un port différent du port par défaut utilisé par node JS (3000)
+
+## Paramétrer le serveur node pour le front-end
 
 - Dans le fichier **client/package.json**, ajouter la ligne suivante pour que le server front-end communique avec le back-end :
 
@@ -24,6 +28,8 @@
         "proxy": "http://localhost:3001" // <= ligne à  ajouter
       }
 
+
+L'ajout du proxy indique au front l'adresse du serveur backend depuis lequel il récupérera les données
 
 ## Connexion à la base de données
 
@@ -111,8 +117,6 @@ http://mongoosejs.com/docs/guide.html
        app.use('/getImages', getImagesRouter);
 
 On paramètre ici le chemin vers notre route. Ce chemin est celui qui va être utilisé par le front-end REACT pour appeler la requête via la méthode **fetch()**.
-
- - Importer la partie front réalisée lors de l'exercice #1 dans le dossier **/client**
 
  - Ajouter la méthode suivante au composant qui contrôle l'affichage de votre liste d'image côté front-end:
 
