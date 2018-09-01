@@ -1,4 +1,4 @@
-# Application Galerie photo
+# Application Galerie Photo
 
 Prérequis : Ce projet nécessite d'avoir installé Node JS sur son ordinateur.
 
