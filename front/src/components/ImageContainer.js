@@ -10,11 +10,14 @@ import {
   Form
 } from "semantic-ui-react";
 
+import ModalAddImage from './ModalAddImage'
+
 class ImageContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
       openModal: false,
+      openAddImage:false,
       imageList:[],
       imageSrc:'',
       desc:'',
@@ -32,9 +35,18 @@ class ImageContainer extends Component {
   handleOpenModal = () => {
     console.log("Modal opened");
     this.setState({
+      openAddImage: true
+    });
+  };
+
+  handleAddImage = () => {
+    console.log("ModalAddImage opened");
+    this.setState({
       openModal: true
     });
   };
+
+  
 
   handleCloseModal = () => {
     console.log("Modal closed");
@@ -245,6 +257,19 @@ class ImageContainer extends Component {
                 );
               })}
             </Image.Group>
+            <Button
+              onClick={this.handleAddImage}
+              icon
+              circular
+              floated="right"
+              size="large"
+              color="red"
+            >
+              <Icon name="plus" size="large" color="white" />
+            </Button>
+            <ModalAddImage
+              openAddImage={this.state.openAddImage}
+            />
             <Button
               onClick={this.handleOpenModal}
               icon
