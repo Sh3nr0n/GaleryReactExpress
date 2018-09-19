@@ -1,4 +1,4 @@
-# Application Gallerie photo
+# Application Galerie Photo
 
 Prérequis : Ce projet nécessite d'avoir installé Node JS sur son ordinateur.
 
@@ -37,9 +37,10 @@ Vous pouvez maintenant accéder à votre base de données avec Robo3T.
 Entrer la commande suivante depuis la racine du projet : 
 
     cd MongoDB/robo3t-1.2.1-linux-x86_64-3e50a65/bin
-
+    sudo chmod +x robo3t
     ./robot3t
 
+Entrer les informations demandées si vous le souhaitez et créer une nouvelle connection (laisser les informations par défaut).
 Cliquer sur "Connect", puis faire un click droit sur "New Connection" et sélectionner "Create Database". Donner un nom à la base de données.
 
 Trouver la ligne suivante dans le fichier "**back/app.js**"  et remplacer **nom_base_de_donnees** par celui de votre base de données
@@ -64,3 +65,5 @@ Effecuter les commandes suivantes dans un nouveau terminal depuis la racine du p
 
        cd front
        npm start
+
+7. Vous pouvez à présent utiliser l'application en local : Ajouter, modifier, supprimer une image et son commentaire associé.

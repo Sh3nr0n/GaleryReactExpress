@@ -12,7 +12,7 @@
             "start": "PORT=3001 node ./bin/www" // <= ligne à    ajouter
           },
 
-Ici on paramètre le server backen pour qu'il se lance sur un port différent du port par défaut utilisé par node JS (3000)
+Ici on paramètre le server backend pour qu'il se lance sur un port différent du port par défaut utilisé par node JS (3000)
 
 ## Paramétrer le serveur node pour le front-end
 
