@@ -16,7 +16,6 @@ class ImageContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openModal: false,
       openAddImage:false,
       imageList:[],
       imageSrc:'',
@@ -32,28 +31,19 @@ class ImageContainer extends Component {
       .then(images => this.setState({ imageList: images }))
   }
 
-  handleOpenModal = () => {
-    console.log("Modal opened");
+  openModalAddImage = () => {
+    console.log("ModalAddImage opened");
     this.setState({
       openAddImage: true
     });
   };
 
-  handleAddImage = () => {
-    console.log("ModalAddImage opened");
+  closeModalAddImage = () => {
+    console.log("ModalAddImage closed");
     this.setState({
-      openModal: true
+      openAddImage: false
     });
-  };
-
-  
-
-  handleCloseModal = () => {
-    console.log("Modal closed");
-    this.setState({
-      openModal: false
-    });
-  };
+  }
 
   fetchImages() {
     fetch('/getImages')
@@ -61,22 +51,22 @@ class ImageContainer extends Component {
     .then(images => this.setState({ imageList: images }))
   };
 
-  handleImageSubmit = () => {
+  handleImageSubmit = (imageSrc,imageDesc) => {
     console.log("form has been submitted");
-    console.log('image src is : %s and desc is : %s',this.state.imageSrc, this.state.desc)
+    console.log('image src is : %s and desc is : %s',imageSrc, imageDesc)
 
     fetch('/postImage', {
       method: 'POST',
       body: JSON.stringify({
-        imageSrc: this.state.imageSrc,
-        desc: this.state.desc
+        imageSrc: imageSrc,
+        desc: imageDesc
       }),
       headers: {"Content-Type": "application/json"}
     })
     .then(console.log('JSON sent to server',
       JSON.stringify({
-        imageSrc: this.state.imageSrc,
-        desc: this.state.desc
+        imageSrc: imageSrc,
+        desc: imageDesc
       })
     ))
     .then(this.fetchImages())// Re-render the image list in the view
@@ -158,37 +148,6 @@ class ImageContainer extends Component {
 
     console.log("images are", imageList);
 
-    const addImageModal = (
-      <Modal open={this.state.openModal} onClose={this.handleCloseModal}>
-        <Modal.Header>Selectionnez une Image</Modal.Header>
-        <Modal.Content image>
-          <Modal.Description>
-            <Form onSubmit={this.handleImageSubmit} error>
-              <Form.Field>
-                <label>URL</label>
-                <input 
-                  placeholder="Entrez l'URL de l'image" 
-                  value={this.state.imageSrc}
-                  onChange={this.handleUrlChange}
-                />
-              </Form.Field>
-              <Form.Field>
-                <label>description</label>
-                <input 
-                  placeholder="Entrez une description" 
-                  value={this.state.desc}
-                  onChange={this.handleDescriptionChange}
-                />
-              </Form.Field>
-              <Button type="submit" floated="right">
-                Valider
-              </Button>
-            </Form>
-          </Modal.Description>
-        </Modal.Content>
-      </Modal>
-    );
-
     const editImageModal = (
       <Modal open={this.state.openEditModal} onClose={this.handleCloseEditModal}>
         <Modal.Header>Selectionnez une Image</Modal.Header>
@@ -258,20 +217,7 @@ class ImageContainer extends Component {
               })}
             </Image.Group>
             <Button
-              onClick={this.handleAddImage}
-              icon
-              circular
-              floated="right"
-              size="large"
-              color="red"
-            >
-              <Icon name="plus" size="large" color="white" />
-            </Button>
-            <ModalAddImage
-              openAddImage={this.state.openAddImage}
-            />
-            <Button
-              onClick={this.handleOpenModal}
+              onClick={this.openModalAddImage}
               icon
               circular
               floated="right"
@@ -280,7 +226,11 @@ class ImageContainer extends Component {
             >
               <Icon name="plus" size="large" color="white" />
             </Button>
-            {addImageModal}
+            <ModalAddImage
+              openAddImage={this.state.openAddImage}
+              closeAddImage={this.closeModalAddImage}
+              submitAddImage={this.handleImageSubmit}
+            />
             {editImageModal}
           </Segment>
         </Container>
