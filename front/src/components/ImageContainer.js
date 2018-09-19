@@ -7,7 +7,8 @@ import {
   Modal,
   Icon,
   Button,
-  Form
+  Form,
+  Input
 } from "semantic-ui-react";
 
 import ModalAddImage from './ModalAddImage'
@@ -21,7 +22,8 @@ class ImageContainer extends Component {
       imageSrc:'',
       desc:'',
       openEditModal:false,
-      id:''
+      id:'',
+      disableImgDesc:true
     };
   }
 
@@ -101,6 +103,24 @@ class ImageContainer extends Component {
     ))
     .then(this.setState({ openModal: false}))// Close Modals
     .then(this.fetchImages())// Re-render the image list in the view
+  }
+
+  editImageDesc = (desc) => {
+    this.setState({
+      disableImgDesc:false,
+      // id:id,
+      desc:desc,
+    })
+  }
+
+  submitImageDesc = (id) => {
+    this.setState({
+      disableImgDesc:true,
+      id:id,      
+    })
+
+    //Then call handleImageEditSubmit to save image edits from the component state
+   
   }
   
 
@@ -210,6 +230,31 @@ class ImageContainer extends Component {
                       <Modal.Description>
                         <Header>Récit</Header>
                         <p>{image.description}</p>
+                        <Input value={image.description} disabled={this.state.disableImgDesc}/>
+                        {this.state.disableImgDesc
+                        ? 
+                        
+                          <Button
+                          onClick={() => {this.editImageDesc(image.imageSrc)}}
+                          circular
+                          icon='edit outline'
+                        >
+                        <Icon name="edit outline" size="large" color="white" />
+                        </Button>
+                        
+                        :
+                        
+                        <Button
+                          onClick={() => {this.submitImageDesc(image.imageSrc)}}
+                          circular
+                          icon='check'
+                        >
+                        <Icon name="check" size="large" color="white" />
+                        </Button>
+                        
+                         }
+                        
+              
                       </Modal.Description>
                     </Modal.Content>
                   </Modal>
