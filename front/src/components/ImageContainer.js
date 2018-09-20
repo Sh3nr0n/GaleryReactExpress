@@ -7,31 +7,40 @@ import {
   Modal,
   Icon,
   Button,
-  Form,
   Input
 } from "semantic-ui-react";
 
-import ModalAddImage from './ModalAddImage'
+import ModalAddImage from "./ModalAddImage";
 
 class ImageContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openAddImage:false,
-      imageList:[],
-      imageSrc:'',
-      desc:'',
-      openEditModal:false,
-      id:'',
-      disableImgDesc:true
+      openAddImage: false,
+      imageList: [],
+      imageSrc: "",
+      desc: "",
+      id: "",
+      disableImgDesc: true,
+      disableImgSrc: true
+
     };
   }
 
   componentDidMount() {
-    fetch('/getImages')
+    fetch("/getImages")
       .then(res => res.json())
-      .then(images => this.setState({ imageList: images }))
+      .then(images => this.setState({ imageList: images }));
   }
+
+  handleImageModal = () => {
+    this.setState({
+      imageSrc: "",
+      desc: "",
+      id: "",
+      disableImgDesc: true
+    });
+  };
 
   openModalAddImage = () => {
     console.log("ModalAddImage opened");
@@ -45,159 +54,147 @@ class ImageContainer extends Component {
     this.setState({
       openAddImage: false
     });
-  }
+  };
 
   fetchImages() {
-    fetch('/getImages')
-    .then(res => res.json())
-    .then(images => this.setState({ imageList: images }))
-  };
+    fetch("/getImages")
+      .then(res => res.json())
+      .then(images => this.setState({ imageList: images }));
+  }
 
-  handleImageSubmit = (imageSrc,imageDesc) => {
+  handleImageSubmit = (imageSrc, imageDesc) => {
     console.log("form has been submitted");
-    console.log('image src is : %s and desc is : %s',imageSrc, imageDesc)
+    console.log("image src is : %s and desc is : %s", imageSrc, imageDesc);
 
-    fetch('/postImage', {
-      method: 'POST',
+    fetch("/postImage", {
+      method: "POST",
       body: JSON.stringify({
         imageSrc: imageSrc,
         desc: imageDesc
       }),
-      headers: {"Content-Type": "application/json"}
+      headers: { "Content-Type": "application/json" }
     })
-    .then(console.log('JSON sent to server',
-      JSON.stringify({
-        imageSrc: imageSrc,
-        desc: imageDesc
-      })
-    ))
-    .then(this.fetchImages())// Re-render the image list in the view
-    .then(this.setState({ openModal: false,}))// Close Modal
+      .then(
+        console.log(
+          "JSON sent to server",
+          JSON.stringify({
+            imageSrc: imageSrc,
+            desc: imageDesc
+          })
+        )
+      )
+      .then(this.fetchImages()) // Re-render the image list in the view
+      .then(this.setState({ openModal: false })); // Close Modal
   };
 
-  handleUrlChange = (event) => {
+  handleUrlChange = event => {
     this.setState({
-      imageSrc:event.target.value
-    })
-  }
+      imageSrc: event.target.value
+    });
+  };
 
-  handleDescriptionChange = (event) => {
+  handleDescriptionChange = event => {
     this.setState({
-      desc:event.target.value
-    })
-  }
+      desc: event.target.value
+    });
+  };
 
-  handleDeleteImage = (id) => {
-    console.log('Delete image with id = %s',id)
-    fetch('/deleteImage', {
-      method: 'DELETE',
+  handleDeleteImage = id => {
+    console.log("Delete image with id = %s", id);
+    fetch("/deleteImage", {
+      method: "DELETE",
       body: JSON.stringify({
-        id: id,
+        id: id
       }),
-      headers: {"Content-Type": "application/json"}
+      headers: { "Content-Type": "application/json" }
     })
-    .then(console.log('JSON object : image id to delete',
-      JSON.stringify({
-        id: id,
-      })
-    ))
-    .then(this.setState({ openModal: false}))// Close Modals
-    .then(this.fetchImages())// Re-render the image list in the view
-  }
+      .then(
+        console.log(
+          "JSON object : image id to delete",
+          JSON.stringify({
+            id: id
+          })
+        )
+      )
+      .then(this.setState({ openModal: false })) // Close Modals
+      .then(this.fetchImages()); // Re-render the image list in the view
+  };
 
-  editImageDesc = (desc) => {
+  editImageDesc = (id, src, desc) => {
+    console.log("editImageDesc", desc);
     this.setState({
-      disableImgDesc:false,
-      // id:id,
-      desc:desc,
-    })
-  }
+      disableImgDesc: false,
+      imageSrc: src,
+      desc: desc,
+      id: id
+    });
+  };
 
-  submitImageDesc = (id) => {
+  editImageSrc = (id, src, desc) => {
+    console.log("editImageSrc", desc);
     this.setState({
-      disableImgDesc:true,
-      id:id,      
-    })
-
-    //Then call handleImageEditSubmit to save image edits from the component state
-   
-  }
-  
+      disableImgSrc: false,
+      imageSrc: src,
+      desc: desc,
+      id: id
+    });
+  };
 
   handleEditImage = (id, src, desc) => {
-    console.log('Edit image with id = %s, src = %s and desc = %s',id,src,desc)
+    console.log(
+      "Edit image with id = %s, src = %s and desc = %s",
+      id,
+      src,
+      desc
+    );
     this.setState({
-      openEditModal:true,
-      imageSrc:src,
-      desc:desc,
-      id:id
-    })
-  }
+      openEditModal: true,
+      imageSrc: src,
+      desc: desc,
+      id: id
+    });
+  };
 
-    handleImageEditSubmit = () => {
-      console.log('modifications sent')
+  handleImageEditSubmit = () => {
+    this.setState({
+          disableImgDesc: true,
+          disableImgSrc: true
+        })
+    console.log("modifications sent");
 
-    fetch('/putImage', {
-      method: 'PUT',
+    fetch("/putImage", {
+      method: "PUT",
       body: JSON.stringify({
         id: this.state.id,
         imageSrc: this.state.imageSrc,
         desc: this.state.desc
       }),
-      headers: {"Content-Type": "application/json"}
+      headers: { "Content-Type": "application/json" }
     })
-    .then(console.log('JSON modified sent to server',
-      JSON.stringify({
-        id: this.state.id,
-        imageSrc: this.state.imageSrc,
-        desc: this.state.desc
-      })
-    ))
-    .then(this.setState({ openEditModal: false}))// Close Modal
-    .then(this.fetchImages())// Re-render the image list in the view
+      .then(
+        console.log(
+          "JSON modified sent to server",
+          JSON.stringify({
+            id: this.state.id,
+            imageSrc: this.state.imageSrc,
+            desc: this.state.desc
+          })
+        )
+      )
+      .then(this.setState({ openEditModal: false })) // Close Modal
+      .then(this.fetchImages()); // Re-render the image list in the view
   }
 
   handleCloseEditModal = () => {
     this.setState({
-      openEditModal:false
+      openEditModal: false
     })
   }
 
   render() {
-    const { imageList } = this.state;
+    const { imageList } = this.state // This syntax is used for destructuring an object 
 
     console.log("images are", imageList);
-
-    const editImageModal = (
-      <Modal open={this.state.openEditModal} onClose={this.handleCloseEditModal}>
-        <Modal.Header>Selectionnez une Image</Modal.Header>
-        <Modal.Content image>
-          <Modal.Description>
-            <Form onSubmit={this.handleImageEditSubmit} error>
-              <Form.Field>
-                <label>URL</label>
-                <input 
-                  placeholder="Entrez l'URL de l'image" 
-                  value={this.state.imageSrc}
-                  onChange={this.handleUrlChange}
-                />
-              </Form.Field>
-              <Form.Field>
-                <label>description</label>
-                <input 
-                  placeholder="Entrez une description" 
-                  value={this.state.desc}
-                  onChange={this.handleDescriptionChange}
-                />
-              </Form.Field>
-              <Button type="submit" floated="right">
-                Valider
-              </Button>
-            </Form>
-          </Modal.Description>
-        </Modal.Content>
-      </Modal>
-    );
 
     return (
       <Fragment>
@@ -208,53 +205,80 @@ class ImageContainer extends Component {
                 return (
                   <Modal
                     key={i}
-                    trigger={<Image src={image.imageSrc} alt={image.description} size="tiny" />}
+                    onClose={this.handleImageModal}
+                    trigger={
+                      <Image
+                        src={image.imageSrc}
+                        alt={image.description}
+                        size="tiny"
+                      />
+                    }
                   >
                     <Modal.Header>
                       Identifiant de l'image : {image._id}
-                      <Button 
-                        circular
-                        floated="right" 
-                        icon='trash alternate outline'
-                        onClick={() => {this.handleDeleteImage(image._id)}}
-                     />
                       <Button
                         circular
                         floated="right"
-                        icon='edit outline'
-                        onClick={() => {this.handleEditImage(image._id, image.imageSrc, image.description)}}
-                     />
+                        icon="trash alternate outline"
+                        onClick={() => {
+                          this.handleDeleteImage(image._id);
+                        }}
+                      />
                     </Modal.Header>
                     <Modal.Content image>
                       <Image wrapped size="medium" src={image.imageSrc} />
                       <Modal.Description>
                         <Header>Récit</Header>
                         <p>{image.description}</p>
-                        <Input value={image.description} disabled={this.state.disableImgDesc}/>
-                        {this.state.disableImgDesc
-                        ? 
-                        
+
+                        <Input
+                          value={this.state.desc}
+                          onChange={this.handleDescriptionChange}
+                          disabled={this.state.disableImgDesc}
+                        />
+
+                        {this.state.disableImgDesc ? (
                           <Button
-                          onClick={() => {this.editImageDesc(image.imageSrc)}}
-                          circular
-                          icon='edit outline'
-                        >
-                        <Icon name="edit outline" size="large" color="white" />
-                        </Button>
-                        
-                        :
-                        
-                        <Button
-                          onClick={() => {this.submitImageDesc(image.imageSrc)}}
-                          circular
-                          icon='check'
-                        >
-                        <Icon name="check" size="large" color="white" />
-                        </Button>
-                        
-                         }
-                        
-              
+                            onClick={() =>
+                              this.editImageDesc(
+                                image._id,
+                                image.imageSrc,
+                                image.description
+                              )
+                            }
+                            circular
+                            icon="edit outline"
+                          />
+                       
+                        ) : (
+                          <Button onClick={this.handleImageEditSubmit} icon="check" circular/>
+                      
+                        )}
+
+                        <p>URL de l'image</p>
+                        <Input
+                          value={this.state.imageSrc}
+                          onChange={this.handleUrlChange}
+                          disabled={this.state.disableImgSrc}
+                        />
+
+                        {this.state.disableImgSrc ? (
+                          <Button
+                            onClick={() =>
+                              this.editImageSrc(
+                                image._id,
+                                image.imageSrc,
+                                image.description
+                              )
+                            }
+                            circular
+                            icon="edit outline"
+                          />
+                        ) : (
+                          <Button onClick={this.handleImageEditSubmit} icon="check" circular/>
+                            
+                        )}
+
                       </Modal.Description>
                     </Modal.Content>
                   </Modal>
@@ -276,12 +300,11 @@ class ImageContainer extends Component {
               closeAddImage={this.closeModalAddImage}
               submitAddImage={this.handleImageSubmit}
             />
-            {editImageModal}
           </Segment>
         </Container>
       </Fragment>
-    );
+    )
   }
 }
 
-export default ImageContainer;
+export default ImageContainer
